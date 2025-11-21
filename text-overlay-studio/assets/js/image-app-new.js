@@ -8,6 +8,7 @@ const appState = {
     cloudinaryPublicId: null,
     cloudinaryURL: null,
     logoPublicId: null,
+    logoLocalURL: null,
     logoSettings: {
         width: 120,
         position: 'top-left'
@@ -179,6 +180,7 @@ function setupEventListeners() {
     document.getElementById('logoSize').addEventListener('input', (e) => {
         appState.logoSettings.width = parseInt(e.target.value);
         document.getElementById('logoSizeValue').textContent = e.target.value + 'px';
+        updatePreview();
     });
 
     // Logo position buttons
@@ -187,6 +189,7 @@ function setupEventListeners() {
             document.querySelectorAll('.logo-pos-btn').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             appState.logoSettings.position = e.target.dataset.position;
+            updatePreview();
         });
     });
 
@@ -295,6 +298,7 @@ async function handleLogoUpload(event) {
     try {
         const result = await cloudinaryAPI.uploadImage(file);
         appState.logoPublicId = result.public_id;
+        appState.logoLocalURL = result.secure_url;
 
         // Show preview
         const logoPreview = document.getElementById('logoPreview');
@@ -306,6 +310,7 @@ async function handleLogoUpload(event) {
         document.getElementById('logoPositionGroup').style.display = 'block';
 
         alert('✅ อัปโหลดโลโก้สำเร็จ!');
+        updatePreview();
 
     } catch (error) {
         console.error('Logo upload error:', error);
@@ -406,18 +411,22 @@ function createLayerUI(layer, index) {
 
     layerDiv.querySelector('.layer-text').addEventListener('input', (e) => {
         layer.text = e.target.value;
+        updatePreview();
     });
 
     layerDiv.querySelector('.layer-pos-x').addEventListener('input', (e) => {
         layer.position.x = parseInt(e.target.value);
+        updatePreview();
     });
 
     layerDiv.querySelector('.layer-pos-y').addEventListener('input', (e) => {
         layer.position.y = parseInt(e.target.value);
+        updatePreview();
     });
 
     layerDiv.querySelector('.layer-curved').addEventListener('change', (e) => {
         layer.curved = e.target.checked;
+        updatePreview();
     });
 
     // Make this the active layer when clicked
@@ -640,6 +649,104 @@ function showLoading(show) {
     } else {
         overlay.classList.remove('active');
     }
+}
+
+/**
+ * Update realtime preview with canvas
+ */
+function updatePreview() {
+    const preview = document.getElementById('imagePreview');
+    if (!preview.src || !appState.cloudinaryURL) return;
+
+    const canvas = document.getElementById('previewCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+        // Set canvas size to match image
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.style.display = 'block';
+        preview.style.display = 'none';
+
+        // Draw base image
+        ctx.drawImage(img, 0, 0);
+
+        // Draw logo if exists
+        if (appState.logoPublicId && appState.logoLocalURL) {
+            const logoImg = new Image();
+            logoImg.crossOrigin = 'anonymous';
+            logoImg.onload = () => {
+                const logoPos = getLogoCanvasPosition(canvas.width, canvas.height, appState.logoSettings);
+                ctx.drawImage(logoImg, logoPos.x, logoPos.y, logoPos.width, logoPos.height);
+
+                // Draw text layers after logo
+                drawTextLayers(ctx, canvas.width, canvas.height);
+            };
+            logoImg.src = appState.logoLocalURL;
+        } else {
+            // Draw text layers
+            drawTextLayers(ctx, canvas.width, canvas.height);
+        }
+    };
+    img.src = appState.cloudinaryURL;
+}
+
+/**
+ * Get logo position for canvas
+ */
+function getLogoCanvasPosition(canvasWidth, canvasHeight, settings) {
+    const logoWidth = settings.width;
+    const logoHeight = settings.width; // Assume square for simplicity
+    const padding = 20;
+
+    const positions = {
+        'top-left': { x: padding, y: padding },
+        'top-center': { x: (canvasWidth - logoWidth) / 2, y: padding },
+        'top-right': { x: canvasWidth - logoWidth - padding, y: padding },
+        'center-left': { x: padding, y: (canvasHeight - logoHeight) / 2 },
+        'center': { x: (canvasWidth - logoWidth) / 2, y: (canvasHeight - logoHeight) / 2 },
+        'center-right': { x: canvasWidth - logoWidth - padding, y: (canvasHeight - logoHeight) / 2 },
+        'bottom-left': { x: padding, y: canvasHeight - logoHeight - padding },
+        'bottom-center': { x: (canvasWidth - logoWidth) / 2, y: canvasHeight - logoHeight - padding },
+        'bottom-right': { x: canvasWidth - logoWidth - padding, y: canvasHeight - logoHeight - padding },
+    };
+
+    return {
+        ...positions[settings.position] || positions['top-left'],
+        width: logoWidth,
+        height: logoHeight
+    };
+}
+
+/**
+ * Draw text layers on canvas
+ */
+function drawTextLayers(ctx, canvasWidth, canvasHeight) {
+    appState.textLayers.forEach(layer => {
+        if (!layer.enabled || !layer.text.trim()) return;
+
+        const x = (layer.position.x / 100) * canvasWidth;
+        const y = (layer.position.y / 100) * canvasHeight;
+
+        // Set font
+        const fontWeight = layer.fontWeight === 'bold' ? 'bold ' : '';
+        ctx.font = `${fontWeight}${layer.fontSize}px ${layer.fontFamily}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Draw stroke if set
+        if (layer.strokeWidth > 0) {
+            ctx.strokeStyle = '#' + layer.strokeColor;
+            ctx.lineWidth = layer.strokeWidth * 2;
+            ctx.strokeText(layer.text, x, y);
+        }
+
+        // Draw fill
+        ctx.fillStyle = '#' + layer.color;
+        ctx.fillText(layer.text, x, y);
+    });
 }
 
 /**
