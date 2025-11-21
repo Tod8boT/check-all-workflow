@@ -88,6 +88,15 @@ class CloudinaryAPI {
             gravity = 'center',
             rotation = 0,
             fontWeight = 'normal',
+            textAlign = 'center',
+            strokeWidth = 0,
+            strokeColor = '000000',
+            shadow = false,
+            shadowBlur = 10,
+            shadowColor = '000000',
+            shadowX = 5,
+            shadowY = 5,
+            letterSpacing = 0,
         } = options;
 
         // Build transformation parts
@@ -103,22 +112,57 @@ class CloudinaryAPI {
         if (xOffset !== 0) parts.push(`x_${xOffset}`);
         if (yOffset !== 0) parts.push(`y_${yOffset}`);
 
+        // Build text style string with new options
+        let textStyleStr = fontFamily.replace(/ /g, '_');
+
+        // Font weight
+        if (fontWeight === 'bold') {
+            textStyleStr += '_bold';
+        }
+
+        // Font size
+        textStyleStr += `_${fontSize}`;
+
+        // Text alignment
+        if (textAlign && textAlign !== 'center') {
+            textStyleStr += `_${textAlign}`;
+        }
+
+        // Letter spacing
+        if (letterSpacing !== 0) {
+            textStyleStr += `_letter_spacing_${letterSpacing}`;
+        }
+
+        // Stroke (border)
+        if (strokeWidth > 0) {
+            textStyleStr += `_stroke`;
+        }
+
         // Text layer
         const encodedText = this.encodeText(text);
-        const fontStr = this.buildFontString(fontFamily, fontSize, fontWeight);
-        parts.push(`l_text:${fontStr}:${encodedText}`);
+        parts.push(`l_text:${textStyleStr}:${encodedText}`);
 
         // Text color
         parts.push(`co_rgb:${color.replace('#', '')}`);
 
+        // Stroke color (if stroke enabled)
+        if (strokeWidth > 0) {
+            parts.push(`bo_${strokeWidth}px_solid_rgb:${strokeColor.replace('#', '')}`);
+        }
+
         // Background (if not transparent)
         if (backgroundColor && backgroundColor !== 'transparent') {
             const bgColor = backgroundColor.replace('#', '');
-            const bgOpacityHex = Math.round((bgOpacity / 100) * 255).toString(16).padStart(2, '0');
             parts.push(`b_rgb:${bgColor}`);
             if (bgOpacity < 100) {
                 parts.push(`o_${bgOpacity}`);
             }
+        }
+
+        // Shadow effect
+        if (shadow) {
+            // Cloudinary uses e_shadow for drop shadow
+            parts.push(`e_shadow:${shadowBlur},x_${shadowX},y_${shadowY},co_rgb:${shadowColor.replace('#', '')}`);
         }
 
         // Curved text (arc distortion)

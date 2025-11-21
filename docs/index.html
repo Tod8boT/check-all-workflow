@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=../text-overlay-studio/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Text Overlay Studio...</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            max-width: 500px;
+            padding: 32px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        a {
+            color: white;
+            text-decoration: underline;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 24px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>📝 Text Overlay Studio</h1>
+        <p>กำลังนำคุณไปยังแอพ...</p>
+        <p style="margin-top: 24px; font-size: 14px;">
+            ถ้าไม่ redirect อัตโนมัติ กรุณา <a href="../text-overlay-studio/">คลิกที่นี่</a>
+        </p>
+    </div>
+
+    <script>
+        // Fallback redirect
+        setTimeout(() => {
+            window.location.href = '../text-overlay-studio/';
+        }, 500);
+    </script>
+</body>
+</html>

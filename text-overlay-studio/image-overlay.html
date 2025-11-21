@@ -305,15 +305,15 @@
         /* Style Presets */
         .preset-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
         }
 
         .preset-card {
-            padding: 16px;
+            padding: 8px;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             border: 2px solid transparent;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
@@ -327,13 +327,25 @@
         }
 
         .preset-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 4px;
         }
 
         .preset-name {
-            font-size: 14px;
+            font-size: 11px;
             font-weight: 500;
+            line-height: 1.2;
+        }
+
+        /* Text Preview Overlay */
+        .text-preview-overlay {
+            position: absolute;
+            pointer-events: none;
+            font-family: 'Mitr', sans-serif;
+            white-space: nowrap;
+            transform-origin: center;
+            transition: all 0.2s ease;
+            z-index: 10;
         }
 
         /* Checkbox */
@@ -490,6 +502,7 @@
                 <img id="imagePreview" src="" alt="Preview">
                 <div class="position-overlay" id="positionOverlay"></div>
                 <div class="position-marker" id="positionMarker" style="display: none;"></div>
+                <div class="text-preview-overlay" id="textPreviewOverlay" style="display: none;"></div>
             </div>
             <p style="text-align: center; margin-top: 12px; font-size: 14px; color: #6C757D;">
                 👆 แตะเลือกตำแหน่งที่ต้องการวางข้อความ
@@ -549,6 +562,102 @@
                 <div class="slider-container">
                     <input type="range" id="bgOpacity" min="0" max="100" value="100">
                     <span class="slider-value" id="bgOpacityValue">100%</span>
+                </div>
+            </div>
+
+            <!-- Font Weight -->
+            <div class="control-group">
+                <label>💪 ความหนาตัวอักษร</label>
+                <select id="fontWeight">
+                    <option value="normal">Normal</option>
+                    <option value="bold">Bold</option>
+                </select>
+            </div>
+
+            <!-- Text Alignment -->
+            <div class="control-group">
+                <label>📐 การจัดข้อความ</label>
+                <select id="textAlign">
+                    <option value="center">Center (กลาง)</option>
+                    <option value="left">Left (ซ้าย)</option>
+                    <option value="right">Right (ขวา)</option>
+                </select>
+            </div>
+
+            <!-- Border/Stroke -->
+            <div class="control-group">
+                <label>🖍️ ขอบตัวอักษร (Stroke)</label>
+                <div class="slider-container">
+                    <input type="range" id="strokeWidth" min="0" max="10" value="0">
+                    <span class="slider-value" id="strokeWidthValue">0px</span>
+                </div>
+            </div>
+
+            <!-- Stroke Color -->
+            <div class="control-group" id="strokeColorGroup" style="display: none;">
+                <label>🎨 สีขอบตัวอักษร</label>
+                <div class="color-picker-container">
+                    <input type="color" id="strokeColor" value="#000000">
+                    <input type="text" id="strokeColorHex" class="color-input" value="#000000">
+                </div>
+            </div>
+
+            <!-- Shadow -->
+            <div class="control-group">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="textShadow">
+                    <label for="textShadow" style="margin: 0;">💫 เงาตัวอักษร (Shadow)</label>
+                </div>
+            </div>
+
+            <!-- Shadow Settings -->
+            <div id="shadowSettings" style="display: none;">
+                <div class="control-group">
+                    <label>📏 ขนาดเงา</label>
+                    <div class="slider-container">
+                        <input type="range" id="shadowBlur" min="0" max="50" value="10">
+                        <span class="slider-value" id="shadowBlurValue">10px</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>🎨 สีเงา</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="shadowColor" value="#000000">
+                        <input type="text" id="shadowColorHex" class="color-input" value="#000000">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>↔️ ตำแหน่งเงา</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="font-size: 12px; color: #6C757D;">X (แนวนอน)</label>
+                            <input type="number" id="shadowX" min="-50" max="50" value="5">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; color: #6C757D;">Y (แนวตั้ง)</label>
+                            <input type="number" id="shadowY" min="-50" max="50" value="5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Letter Spacing -->
+            <div class="control-group">
+                <label>📏 ระยะห่างตัวอักษร (Letter Spacing)</label>
+                <div class="slider-container">
+                    <input type="range" id="letterSpacing" min="-5" max="20" value="0">
+                    <span class="slider-value" id="letterSpacingValue">0</span>
+                </div>
+            </div>
+
+            <!-- Rotation -->
+            <div class="control-group">
+                <label>🔄 หมุนข้อความ (Rotation)</label>
+                <div class="slider-container">
+                    <input type="range" id="textRotation" min="-180" max="180" value="0">
+                    <span class="slider-value" id="textRotationValue">0°</span>
                 </div>
             </div>
 
