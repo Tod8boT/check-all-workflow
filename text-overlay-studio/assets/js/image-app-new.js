@@ -278,6 +278,12 @@ function addTextLayer() {
         strokeColor: '17539f',
         curved: false,
         curveAngle: 40,
+        rotation: 0,
+        shadow: false,
+        shadowColor: '000000',
+        shadowBlur: 10,
+        shadowX: 3,
+        shadowY: 3,
     };
 
     appState.textLayers.push(layer);
@@ -379,6 +385,25 @@ function createLayerUI(layer, index) {
                 </div>
             </div>
 
+            <div class="control-group">
+                <label>🔄 หมุน: <span class="layer-rotation-value">${layer.rotation}°</span></label>
+                <input type="range" class="layer-rotation" min="-180" max="180" value="${layer.rotation}">
+            </div>
+
+            <div class="control-group">
+                <label>💫 เงาตัวอักษร</label>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <input type="checkbox" class="layer-shadow" ${layer.shadow ? 'checked' : ''}>
+                    <input type="color" class="layer-shadow-color" value="#${layer.shadowColor}" style="width: 40px; height: 30px;" ${!layer.shadow ? 'disabled' : ''}>
+                    <span style="font-size: 11px;">เบลอ:</span>
+                    <input type="number" class="layer-shadow-blur" min="0" max="50" value="${layer.shadowBlur}" style="width: 50px;" ${!layer.shadow ? 'disabled' : ''}>
+                    <span style="font-size: 11px;">X:</span>
+                    <input type="number" class="layer-shadow-x" min="-50" max="50" value="${layer.shadowX}" style="width: 45px;" ${!layer.shadow ? 'disabled' : ''}>
+                    <span style="font-size: 11px;">Y:</span>
+                    <input type="number" class="layer-shadow-y" min="-50" max="50" value="${layer.shadowY}" style="width: 45px;" ${!layer.shadow ? 'disabled' : ''}>
+                </div>
+            </div>
+
             <!-- Pattern Templates -->
             <div class="control-group" style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e0e6ed;">
                 <label>📋 เทมเพลตสไตล์</label>
@@ -477,6 +502,45 @@ function setupLayerEventListeners(layerDiv, layer, index) {
         updatePreview();
     });
 
+    // Rotation
+    layerDiv.querySelector('.layer-rotation').addEventListener('input', (e) => {
+        layer.rotation = parseInt(e.target.value) || 0;
+        layerDiv.querySelector('.layer-rotation-value').textContent = e.target.value + '°';
+        updatePreview();
+    });
+
+    // Shadow checkbox
+    layerDiv.querySelector('.layer-shadow').addEventListener('change', (e) => {
+        layer.shadow = e.target.checked;
+        const shadowInputs = layerDiv.querySelectorAll('.layer-shadow-color, .layer-shadow-blur, .layer-shadow-x, .layer-shadow-y');
+        shadowInputs.forEach(input => input.disabled = !e.target.checked);
+        updatePreview();
+    });
+
+    // Shadow color
+    layerDiv.querySelector('.layer-shadow-color').addEventListener('input', (e) => {
+        layer.shadowColor = e.target.value.replace('#', '');
+        updatePreview();
+    });
+
+    // Shadow blur
+    layerDiv.querySelector('.layer-shadow-blur').addEventListener('input', (e) => {
+        layer.shadowBlur = parseInt(e.target.value) || 0;
+        updatePreview();
+    });
+
+    // Shadow X
+    layerDiv.querySelector('.layer-shadow-x').addEventListener('input', (e) => {
+        layer.shadowX = parseInt(e.target.value) || 0;
+        updatePreview();
+    });
+
+    // Shadow Y
+    layerDiv.querySelector('.layer-shadow-y').addEventListener('input', (e) => {
+        layer.shadowY = parseInt(e.target.value) || 0;
+        updatePreview();
+    });
+
     // Template select
     layerDiv.querySelector('.layer-template-select').addEventListener('change', (e) => {
         if (e.target.value) {
@@ -522,7 +586,13 @@ function saveLayerTemplate(index) {
         strokeWidth: layer.strokeWidth,
         strokeColor: layer.strokeColor,
         curved: layer.curved,
-        curveAngle: layer.curveAngle
+        curveAngle: layer.curveAngle,
+        rotation: layer.rotation,
+        shadow: layer.shadow,
+        shadowColor: layer.shadowColor,
+        shadowBlur: layer.shadowBlur,
+        shadowX: layer.shadowX,
+        shadowY: layer.shadowY
     });
 
     localStorage.setItem('textTemplates', JSON.stringify(templates));
@@ -571,6 +641,12 @@ function applyTemplate(layerIndex, templateIndex) {
     layer.strokeColor = template.strokeColor;
     layer.curved = template.curved;
     layer.curveAngle = template.curveAngle;
+    layer.rotation = template.rotation || 0;
+    layer.shadow = template.shadow || false;
+    layer.shadowColor = template.shadowColor || '000000';
+    layer.shadowBlur = template.shadowBlur || 10;
+    layer.shadowX = template.shadowX || 3;
+    layer.shadowY = template.shadowY || 3;
 
     // Update UI
     const layerDiv = document.getElementById(layer.id);
@@ -586,6 +662,15 @@ function applyTemplate(layerIndex, templateIndex) {
         layerDiv.querySelector('.layer-stroke-color-group').style.display = layer.strokeWidth > 0 ? 'block' : 'none';
         layerDiv.querySelector('.layer-curved').checked = layer.curved;
         layerDiv.querySelector('.layer-curve-angle').value = layer.curveAngle;
+        layerDiv.querySelector('.layer-rotation').value = layer.rotation;
+        layerDiv.querySelector('.layer-rotation-value').textContent = layer.rotation + '°';
+        layerDiv.querySelector('.layer-shadow').checked = layer.shadow;
+        layerDiv.querySelector('.layer-shadow-color').value = '#' + layer.shadowColor;
+        layerDiv.querySelector('.layer-shadow-blur').value = layer.shadowBlur;
+        layerDiv.querySelector('.layer-shadow-x').value = layer.shadowX;
+        layerDiv.querySelector('.layer-shadow-y').value = layer.shadowY;
+        const shadowInputs = layerDiv.querySelectorAll('.layer-shadow-color, .layer-shadow-blur, .layer-shadow-x, .layer-shadow-y');
+        shadowInputs.forEach(input => input.disabled = !layer.shadow);
     }
 
     updatePreview();
@@ -887,6 +972,23 @@ function drawTextLayers(ctx, canvasWidth, canvasHeight) {
         const x = (layer.position.x / 100) * canvasWidth;
         const y = (layer.position.y / 100) * canvasHeight;
 
+        ctx.save();
+
+        // Apply rotation
+        if (layer.rotation !== 0) {
+            ctx.translate(x, y);
+            ctx.rotate(layer.rotation * Math.PI / 180);
+            ctx.translate(-x, -y);
+        }
+
+        // Apply shadow
+        if (layer.shadow) {
+            ctx.shadowColor = '#' + layer.shadowColor;
+            ctx.shadowBlur = layer.shadowBlur;
+            ctx.shadowOffsetX = layer.shadowX;
+            ctx.shadowOffsetY = layer.shadowY;
+        }
+
         // Set font
         const fontWeight = layer.fontWeight === 'bold' ? 'bold ' : '';
         ctx.font = `${fontWeight}${layer.fontSize}px ${layer.fontFamily}`;
@@ -909,6 +1011,8 @@ function drawTextLayers(ctx, canvasWidth, canvasHeight) {
             ctx.fillStyle = '#' + layer.color;
             ctx.fillText(layer.text, x, y);
         }
+
+        ctx.restore();
     });
 }
 
