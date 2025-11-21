@@ -1,10 +1,9 @@
 // ⚙️ Configuration
 const CONFIG = {
     // Cloudinary Settings
-    // ⚠️ TODO: ใส่ข้อมูล Cloudinary ของคุณที่นี่
     cloudinary: {
-        cloudName: 'YOUR_CLOUD_NAME', // เปลี่ยนเป็น cloud name ของคุณ (เช่น 'dxxxxxxx')
-        uploadPreset: 'YOUR_UPLOAD_PRESET', // เปลี่ยนเป็น upload preset ของคุณ (เช่น 'ml_default')
+        cloudName: 'dz3cmaxnc',
+        uploadPreset: 'template',
     },
 
     // n8n Webhook URL
