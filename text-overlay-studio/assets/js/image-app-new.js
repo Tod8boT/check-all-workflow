@@ -893,17 +893,63 @@ function drawTextLayers(ctx, canvasWidth, canvasHeight) {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
+        if (layer.curved && layer.curveAngle !== 0) {
+            // Draw curved text
+            drawCurvedText(ctx, layer.text, x, y, layer);
+        } else {
+            // Draw straight text
+            // Draw stroke if set
+            if (layer.strokeWidth > 0) {
+                ctx.strokeStyle = '#' + layer.strokeColor;
+                ctx.lineWidth = layer.strokeWidth * 2;
+                ctx.strokeText(layer.text, x, y);
+            }
+
+            // Draw fill
+            ctx.fillStyle = '#' + layer.color;
+            ctx.fillText(layer.text, x, y);
+        }
+    });
+}
+
+/**
+ * Draw curved text on canvas
+ */
+function drawCurvedText(ctx, text, centerX, centerY, layer) {
+    const angle = layer.curveAngle * (Math.PI / 180); // Convert to radians
+    const radius = layer.fontSize * 3; // Radius based on font size
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+
+    // Calculate total angle span
+    const totalAngle = Math.abs(angle);
+    const chars = text.split('');
+    const anglePerChar = totalAngle / Math.max(chars.length - 1, 1);
+    const startAngle = -Math.PI/2 - (totalAngle / 2); // Start from top
+
+    chars.forEach((char, i) => {
+        const charAngle = startAngle + (i * anglePerChar * Math.sign(angle));
+
+        ctx.save();
+        ctx.rotate(charAngle + Math.PI/2);
+        ctx.translate(0, -radius);
+
         // Draw stroke if set
         if (layer.strokeWidth > 0) {
             ctx.strokeStyle = '#' + layer.strokeColor;
             ctx.lineWidth = layer.strokeWidth * 2;
-            ctx.strokeText(layer.text, x, y);
+            ctx.strokeText(char, 0, 0);
         }
 
         // Draw fill
         ctx.fillStyle = '#' + layer.color;
-        ctx.fillText(layer.text, x, y);
+        ctx.fillText(char, 0, 0);
+
+        ctx.restore();
     });
+
+    ctx.restore();
 }
 
 /**
