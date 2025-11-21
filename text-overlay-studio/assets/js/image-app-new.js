@@ -93,51 +93,17 @@ function applyPresetToCurrentLayer(presetKey) {
 }
 
 /**
- * Load fonts
+ * Load fonts - no longer needed, fonts loaded per layer
  */
 function loadFonts() {
-    const fontSelect = document.getElementById('fontSelect');
-
-    // Thai fonts
-    const thaiGroup = document.createElement('optgroup');
-    thaiGroup.label = '🇹🇭 ฟอนต์ไทย';
-    CONFIG.fonts.thai.forEach(font => {
-        const option = document.createElement('option');
-        option.value = font;
-        option.textContent = font;
-        option.style.fontFamily = font;
-        thaiGroup.appendChild(option);
-    });
-    fontSelect.appendChild(thaiGroup);
-
-    // English fonts
-    const englishGroup = document.createElement('optgroup');
-    englishGroup.label = '🇬🇧 English Fonts';
-    CONFIG.fonts.english.forEach(font => {
-        const option = document.createElement('option');
-        option.value = font;
-        option.textContent = font;
-        option.style.fontFamily = font;
-        englishGroup.appendChild(option);
-    });
-    fontSelect.appendChild(englishGroup);
+    // Fonts are now loaded inline in each layer
 }
 
 /**
- * Load position presets
+ * Load position presets - no longer needed
  */
 function loadPositionPresets() {
-    const positionGrid = document.getElementById('positionGrid');
-
-    Object.keys(CONFIG.positions).forEach(key => {
-        const pos = CONFIG.positions[key];
-        const btn = document.createElement('button');
-        btn.className = 'position-btn';
-        btn.textContent = pos.name;
-        btn.dataset.position = key;
-        btn.onclick = () => selectPosition(pos.value.x, pos.value.y);
-        positionGrid.appendChild(btn);
-    });
+    // Position presets removed, each layer has own position
 }
 
 /**
@@ -201,44 +167,10 @@ function setupEventListeners() {
 }
 
 /**
- * Setup slider value displays
+ * Setup slider value displays - now handled per-layer
  */
 function setupSliderListeners() {
-    const sliders = [
-        { id: 'fontSize', valueId: 'fontSizeValue', suffix: 'px' },
-        { id: 'bgOpacity', valueId: 'bgOpacityValue', suffix: '%' },
-        { id: 'strokeWidth', valueId: 'strokeWidthValue', suffix: 'px' },
-        { id: 'shadowBlur', valueId: 'shadowBlurValue', suffix: 'px' },
-        { id: 'letterSpacing', valueId: 'letterSpacingValue', suffix: '' },
-        { id: 'textRotation', valueId: 'textRotationValue', suffix: '°' },
-        { id: 'curveAngle', valueId: 'curveAngleValue', suffix: '°' },
-    ];
-
-    sliders.forEach(slider => {
-        const element = document.getElementById(slider.id);
-        const valueElement = document.getElementById(slider.valueId);
-        if (element && valueElement) {
-            element.addEventListener('input', (e) => {
-                valueElement.textContent = e.target.value + slider.suffix;
-            });
-        }
-    });
-
-    // Stroke width - show color picker
-    document.getElementById('strokeWidth').addEventListener('input', (e) => {
-        const strokeColorGroup = document.getElementById('strokeColorGroup');
-        strokeColorGroup.style.display = e.target.value > 0 ? 'block' : 'none';
-    });
-
-    // Text shadow checkbox
-    document.getElementById('textShadow').addEventListener('change', (e) => {
-        document.getElementById('shadowSettings').style.display = e.target.checked ? 'block' : 'none';
-    });
-
-    // Curved text checkbox
-    document.getElementById('curvedText').addEventListener('change', (e) => {
-        document.getElementById('curveAngleGroup').style.display = e.target.checked ? 'block' : 'none';
-    });
+    // All slider listeners are now set up per-layer in setupLayerEventListeners
 }
 
 /**
@@ -359,7 +291,7 @@ function addTextLayer() {
 }
 
 /**
- * Create layer UI
+ * Create layer UI with inline advanced settings
  */
 function createLayerUI(layer, index) {
     const container = document.getElementById('textLayersContainer');
@@ -392,47 +324,272 @@ function createLayerUI(layer, index) {
             </div>
         </div>
 
-        <div class="control-group">
-            <label>🌈 ข้อความโค้ง</label>
-            <div class="checkbox-container">
-                <input type="checkbox" class="layer-curved" data-index="${index}">
-                <label style="margin: 0; font-size: 12px;">เปิดใช้งานข้อความโค้ง</label>
+        <!-- Inline Advanced Settings -->
+        <div class="layer-advanced-toggle" onclick="toggleLayerAdvanced('${layer.id}')">
+            <span>⚙️ ตั้งค่าเพิ่มเติม</span>
+            <span class="toggle-icon">▼</span>
+        </div>
+        <div class="layer-advanced-content" id="advanced-${layer.id}">
+            <div class="control-group">
+                <label>🔤 ฟอนต์</label>
+                <select class="layer-font">
+                    <optgroup label="🇹🇭 ฟอนต์ไทย">
+                        ${CONFIG.fonts.thai.map(f => `<option value="${f}" ${f === layer.fontFamily ? 'selected' : ''}>${f}</option>`).join('')}
+                    </optgroup>
+                    <optgroup label="🇬🇧 English">
+                        ${CONFIG.fonts.english.map(f => `<option value="${f}" ${f === layer.fontFamily ? 'selected' : ''}>${f}</option>`).join('')}
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>📏 ขนาด: <span class="layer-size-value">${layer.fontSize}px</span></label>
+                <input type="range" class="layer-size" min="12" max="150" value="${layer.fontSize}">
+            </div>
+
+            <div class="control-group">
+                <label>🎨 สีตัวอักษร</label>
+                <input type="color" class="layer-color" value="#${layer.color}">
+            </div>
+
+            <div class="control-group">
+                <label>💪 ความหนา</label>
+                <select class="layer-weight">
+                    <option value="normal" ${layer.fontWeight === 'normal' ? 'selected' : ''}>Normal</option>
+                    <option value="bold" ${layer.fontWeight === 'bold' ? 'selected' : ''}>Bold</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>🖍️ ขอบ (Stroke): <span class="layer-stroke-value">${layer.strokeWidth}px</span></label>
+                <input type="range" class="layer-stroke" min="0" max="10" value="${layer.strokeWidth}">
+            </div>
+
+            <div class="control-group layer-stroke-color-group" style="display: ${layer.strokeWidth > 0 ? 'block' : 'none'};">
+                <label>🎨 สีขอบ</label>
+                <input type="color" class="layer-stroke-color" value="#${layer.strokeColor}">
+            </div>
+
+            <div class="control-group">
+                <label>🌈 ข้อความโค้ง</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <input type="checkbox" class="layer-curved" ${layer.curved ? 'checked' : ''}>
+                    <span style="font-size: 12px;">องศา:</span>
+                    <input type="number" class="layer-curve-angle" min="-180" max="180" value="${layer.curveAngle}" style="width: 60px;">
+                </div>
+            </div>
+
+            <!-- Pattern Templates -->
+            <div class="control-group" style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e0e6ed;">
+                <label>📋 เทมเพลตสไตล์</label>
+                <select class="layer-template-select" style="margin-bottom: 8px;">
+                    <option value="">-- ใช้สไตล์ที่บันทึก --</option>
+                </select>
+                <button class="save-template-btn" onclick="saveLayerTemplate(${index})">💾 บันทึกสไตล์นี้</button>
             </div>
         </div>
     `;
 
     container.appendChild(layerDiv);
 
-    // Add event listeners for this layer
+    // Setup event listeners
+    setupLayerEventListeners(layerDiv, layer, index);
+
+    // Load saved templates into dropdown
+    loadTemplatesIntoDropdown(layerDiv.querySelector('.layer-template-select'), index);
+}
+
+/**
+ * Setup event listeners for a layer
+ */
+function setupLayerEventListeners(layerDiv, layer, index) {
+    // Enable/disable
     layerDiv.querySelector('.layer-enabled').addEventListener('change', (e) => {
         layer.enabled = e.target.checked;
         layerDiv.classList.toggle('disabled', !e.target.checked);
+        updatePreview();
     });
 
+    // Text
     layerDiv.querySelector('.layer-text').addEventListener('input', (e) => {
         layer.text = e.target.value;
         updatePreview();
     });
 
+    // Position
     layerDiv.querySelector('.layer-pos-x').addEventListener('input', (e) => {
-        layer.position.x = parseInt(e.target.value);
+        layer.position.x = parseInt(e.target.value) || 0;
         updatePreview();
     });
-
     layerDiv.querySelector('.layer-pos-y').addEventListener('input', (e) => {
-        layer.position.y = parseInt(e.target.value);
+        layer.position.y = parseInt(e.target.value) || 0;
         updatePreview();
     });
 
+    // Font
+    layerDiv.querySelector('.layer-font').addEventListener('change', (e) => {
+        layer.fontFamily = e.target.value;
+        updatePreview();
+    });
+
+    // Size
+    layerDiv.querySelector('.layer-size').addEventListener('input', (e) => {
+        layer.fontSize = parseInt(e.target.value);
+        layerDiv.querySelector('.layer-size-value').textContent = e.target.value + 'px';
+        updatePreview();
+    });
+
+    // Color
+    layerDiv.querySelector('.layer-color').addEventListener('input', (e) => {
+        layer.color = e.target.value.replace('#', '');
+        updatePreview();
+    });
+
+    // Weight
+    layerDiv.querySelector('.layer-weight').addEventListener('change', (e) => {
+        layer.fontWeight = e.target.value;
+        updatePreview();
+    });
+
+    // Stroke width
+    layerDiv.querySelector('.layer-stroke').addEventListener('input', (e) => {
+        layer.strokeWidth = parseInt(e.target.value);
+        layerDiv.querySelector('.layer-stroke-value').textContent = e.target.value + 'px';
+        layerDiv.querySelector('.layer-stroke-color-group').style.display = e.target.value > 0 ? 'block' : 'none';
+        updatePreview();
+    });
+
+    // Stroke color
+    layerDiv.querySelector('.layer-stroke-color').addEventListener('input', (e) => {
+        layer.strokeColor = e.target.value.replace('#', '');
+        updatePreview();
+    });
+
+    // Curved
     layerDiv.querySelector('.layer-curved').addEventListener('change', (e) => {
         layer.curved = e.target.checked;
         updatePreview();
     });
 
-    // Make this the active layer when clicked
+    // Curve angle
+    layerDiv.querySelector('.layer-curve-angle').addEventListener('input', (e) => {
+        layer.curveAngle = parseInt(e.target.value) || 0;
+        updatePreview();
+    });
+
+    // Template select
+    layerDiv.querySelector('.layer-template-select').addEventListener('change', (e) => {
+        if (e.target.value) {
+            applyTemplate(index, e.target.value);
+            e.target.value = ''; // Reset dropdown
+        }
+    });
+
+    // Set active layer on click
     layerDiv.addEventListener('click', () => {
         appState.currentLayerIndex = index;
     });
+}
+
+/**
+ * Toggle layer advanced settings
+ */
+function toggleLayerAdvanced(layerId) {
+    const content = document.getElementById('advanced-' + layerId);
+    const toggle = content.previousElementSibling;
+    content.classList.toggle('active');
+    toggle.classList.toggle('active');
+}
+
+/**
+ * Save layer settings as template
+ */
+function saveLayerTemplate(index) {
+    const layer = appState.textLayers[index];
+    if (!layer) return;
+
+    const name = prompt('ตั้งชื่อเทมเพลต:');
+    if (!name) return;
+
+    const templates = JSON.parse(localStorage.getItem('textTemplates') || '[]');
+
+    templates.push({
+        name: name,
+        fontFamily: layer.fontFamily,
+        fontSize: layer.fontSize,
+        color: layer.color,
+        fontWeight: layer.fontWeight,
+        strokeWidth: layer.strokeWidth,
+        strokeColor: layer.strokeColor,
+        curved: layer.curved,
+        curveAngle: layer.curveAngle
+    });
+
+    localStorage.setItem('textTemplates', JSON.stringify(templates));
+
+    // Refresh all dropdowns
+    document.querySelectorAll('.layer-template-select').forEach((select, idx) => {
+        loadTemplatesIntoDropdown(select, idx);
+    });
+
+    alert('✅ บันทึกเทมเพลต "' + name + '" แล้ว!');
+}
+
+/**
+ * Load templates into dropdown
+ */
+function loadTemplatesIntoDropdown(select, layerIndex) {
+    const templates = JSON.parse(localStorage.getItem('textTemplates') || '[]');
+
+    // Clear existing options except first
+    select.innerHTML = '<option value="">-- ใช้สไตล์ที่บันทึก --</option>';
+
+    templates.forEach((template, idx) => {
+        const option = document.createElement('option');
+        option.value = idx;
+        option.textContent = template.name;
+        select.appendChild(option);
+    });
+}
+
+/**
+ * Apply template to layer
+ */
+function applyTemplate(layerIndex, templateIndex) {
+    const templates = JSON.parse(localStorage.getItem('textTemplates') || '[]');
+    const template = templates[templateIndex];
+    const layer = appState.textLayers[layerIndex];
+
+    if (!template || !layer) return;
+
+    // Apply template values
+    layer.fontFamily = template.fontFamily;
+    layer.fontSize = template.fontSize;
+    layer.color = template.color;
+    layer.fontWeight = template.fontWeight;
+    layer.strokeWidth = template.strokeWidth;
+    layer.strokeColor = template.strokeColor;
+    layer.curved = template.curved;
+    layer.curveAngle = template.curveAngle;
+
+    // Update UI
+    const layerDiv = document.getElementById(layer.id);
+    if (layerDiv) {
+        layerDiv.querySelector('.layer-font').value = layer.fontFamily;
+        layerDiv.querySelector('.layer-size').value = layer.fontSize;
+        layerDiv.querySelector('.layer-size-value').textContent = layer.fontSize + 'px';
+        layerDiv.querySelector('.layer-color').value = '#' + layer.color;
+        layerDiv.querySelector('.layer-weight').value = layer.fontWeight;
+        layerDiv.querySelector('.layer-stroke').value = layer.strokeWidth;
+        layerDiv.querySelector('.layer-stroke-value').textContent = layer.strokeWidth + 'px';
+        layerDiv.querySelector('.layer-stroke-color').value = '#' + layer.strokeColor;
+        layerDiv.querySelector('.layer-stroke-color-group').style.display = layer.strokeWidth > 0 ? 'block' : 'none';
+        layerDiv.querySelector('.layer-curved').checked = layer.curved;
+        layerDiv.querySelector('.layer-curve-angle').value = layer.curveAngle;
+    }
+
+    updatePreview();
+    alert('✅ ใช้เทมเพลต "' + template.name + '" แล้ว!');
 }
 
 /**
@@ -495,30 +652,30 @@ function handlePositionClick(event) {
 }
 
 /**
- * Select position
+ * Select position (from clicking on preview)
  */
 function selectPosition(x, y) {
     // Update current layer position
     if (appState.textLayers[appState.currentLayerIndex]) {
         appState.textLayers[appState.currentLayerIndex].position = { x, y };
 
-        // Update position inputs
+        // Update position inputs in layer UI
         const layerElement = document.getElementById(appState.textLayers[appState.currentLayerIndex].id);
         if (layerElement) {
             layerElement.querySelector('.layer-pos-x').value = x;
             layerElement.querySelector('.layer-pos-y').value = y;
         }
+
+        updatePreview();
     }
 
-    // Update shared position inputs
-    document.getElementById('posX').value = x;
-    document.getElementById('posY').value = y;
-
-    // Update marker
+    // Update marker on preview
     const marker = document.getElementById('positionMarker');
-    marker.style.left = x + '%';
-    marker.style.top = y + '%';
-    marker.style.display = 'block';
+    if (marker) {
+        marker.style.left = x + '%';
+        marker.style.top = y + '%';
+        marker.style.display = 'block';
+    }
 }
 
 /**
@@ -764,3 +921,5 @@ function toggleSection(sectionId) {
 window.addTextLayer = addTextLayer;
 window.removeTextLayer = removeTextLayer;
 window.toggleSection = toggleSection;
+window.toggleLayerAdvanced = toggleLayerAdvanced;
+window.saveLayerTemplate = saveLayerTemplate;
