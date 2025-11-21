@@ -203,6 +203,208 @@
             text-align: right;
         }
 
+        /* Text Layers */
+        .text-layer {
+            background: #f8f9fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .text-layer.disabled {
+            opacity: 0.6;
+            background: #f0f0f0;
+        }
+
+        .layer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .layer-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2C3E50;
+        }
+
+        .layer-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .remove-layer-btn {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Mitr', sans-serif;
+        }
+
+        .add-layer-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Mitr', sans-serif;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .add-layer-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Layer Advanced Toggle */
+        .layer-advanced-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #2980B9;
+            transition: background 0.2s;
+        }
+
+        .layer-advanced-toggle:hover {
+            background: #d4ebf9;
+        }
+
+        .layer-advanced-toggle.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .layer-advanced-content {
+            display: none;
+            padding: 12px 0 0 0;
+            margin-top: 12px;
+            border-top: 1px dashed #e0e6ed;
+        }
+
+        .layer-advanced-content.active {
+            display: block;
+        }
+
+        .layer-advanced-content .control-group {
+            margin-bottom: 12px;
+        }
+
+        .layer-advanced-content select,
+        .layer-advanced-content input[type="range"] {
+            width: 100%;
+        }
+
+        .layer-advanced-content input[type="color"] {
+            width: 50px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .save-template-btn {
+            width: 100%;
+            padding: 10px;
+            background: #9B59B6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Mitr', sans-serif;
+            font-size: 13px;
+        }
+
+        .save-template-btn:hover {
+            background: #8E44AD;
+        }
+
+        /* Collapsible Sections */
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 16px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .collapsible-content.active {
+            display: block;
+        }
+
+        .section-header {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        /* Logo Section */
+        .logo-preview {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .logo-position-select {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .logo-pos-btn {
+            padding: 8px;
+            background: #f8f9fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Mitr', sans-serif;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .logo-pos-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .logo-pos-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
         /* Styling same as image-overlay.html */
         .controls-section {
             background: white;
@@ -567,103 +769,71 @@
 
         <!-- Controls Section -->
         <div class="controls-section" id="controlsSection">
-            <!-- Text Input -->
-            <div class="control-group">
-                <label>📝 ข้อความ</label>
-                <textarea id="textInput" placeholder="พิมพ์ข้อความที่ต้องการ..."></textarea>
+            <!-- Logo Upload Section -->
+            <div class="collapsible-header" onclick="toggleSection('logoSection')">
+                <span>🏷️ โลโก้/แบรนด์ (ถ้ามี)</span>
+                <span class="collapsible-icon">▼</span>
             </div>
+            <div class="collapsible-content" id="logoSection">
+                <div class="control-group">
+                    <label>📤 อัปโหลดโลโก้</label>
+                    <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp" style="width: 100%; padding: 8px; border: 2px solid #e0e6ed; border-radius: 8px;">
+                    <img id="logoPreview" class="logo-preview" style="display: none;">
+                </div>
 
-            <!-- Video Timing -->
-            <div class="control-group">
-                <label>⏰ เวลาที่ข้อความปรากฏ (วินาที)</label>
-                <div class="time-input-group">
-                    <div>
-                        <label style="font-size: 12px; color: #6C757D;">เริ่มต้น (วินาที)</label>
-                        <input type="number" id="startTime" min="0" step="0.1" value="0" placeholder="0">
+                <div class="control-group" id="logoSizeGroup" style="display: none;">
+                    <label>📏 ขนาดโลโก้</label>
+                    <div class="slider-container">
+                        <input type="range" id="logoSize" min="50" max="300" value="120">
+                        <span class="slider-value" id="logoSizeValue">120px</span>
                     </div>
-                    <div>
-                        <label style="font-size: 12px; color: #6C757D;">สิ้นสุด (วินาที, หรือเว้นว่างถ้าจนจบ)</label>
-                        <input type="number" id="endTime" min="0" step="0.1" placeholder="ทั้งหมด">
+                </div>
+
+                <div class="control-group" id="logoPositionGroup" style="display: none;">
+                    <label>📍 ตำแหน่งโลโก้</label>
+                    <div class="logo-position-select">
+                        <button class="logo-pos-btn active" data-position="top-left">มุมบนซ้าย</button>
+                        <button class="logo-pos-btn" data-position="top-center">บนกลาง</button>
+                        <button class="logo-pos-btn" data-position="top-right">มุมบนขวา</button>
+                        <button class="logo-pos-btn" data-position="center-left">ซ้ายกลาง</button>
+                        <button class="logo-pos-btn" data-position="center">ตรงกลาง</button>
+                        <button class="logo-pos-btn" data-position="center-right">ขวากลาง</button>
+                        <button class="logo-pos-btn" data-position="bottom-left">มุมล่างซ้าย</button>
+                        <button class="logo-pos-btn" data-position="bottom-center">ล่างกลาง</button>
+                        <button class="logo-pos-btn" data-position="bottom-right">มุมล่างขวา</button>
                     </div>
                 </div>
-                <p style="font-size: 12px; color: #6C757D; margin-top: 8px;">
-                    💡 เว้นว่าง "สิ้นสุด" ถ้าต้องการให้แสดงจนจบวิดีโอ
-                </p>
-            </div>
 
-            <!-- Style Presets -->
-            <div class="control-group">
-                <label>🎨 สไตล์สำเร็จรูป</label>
-                <div class="preset-grid" id="presetGrid"></div>
-            </div>
-
-            <!-- Font Family -->
-            <div class="control-group">
-                <label>🔤 ฟอนต์</label>
-                <select id="fontSelect"></select>
-            </div>
-
-            <!-- Font Size -->
-            <div class="control-group">
-                <label>📏 ขนาดตัวอักษร</label>
-                <div class="slider-container">
-                    <input type="range" id="fontSize" min="12" max="120" value="24">
-                    <span class="slider-value" id="fontSizeValue">24px</span>
+                <div class="control-group" id="logoTimingGroup" style="display: none;">
+                    <label>⏱️ เวลาแสดงโลโก้ (วินาที)</label>
+                    <div style="display: flex; gap: 12px;">
+                        <input type="number" id="logoStartTime" min="0" step="0.5" value="0" placeholder="เริ่ม (0)" style="flex: 1;">
+                        <input type="number" id="logoEndTime" min="0" step="0.5" placeholder="จบ (ว่าง = จบวิดีโอ)" style="flex: 1;">
+                    </div>
                 </div>
             </div>
 
-            <!-- Text Color -->
-            <div class="control-group">
-                <label>🎨 สีตัวอักษร</label>
-                <div class="color-picker-container">
-                    <input type="color" id="textColor" value="#FFFFFF">
-                    <input type="text" id="textColorHex" class="color-input" value="#FFFFFF" placeholder="#FFFFFF">
+            <!-- Text Layers Section -->
+            <div class="section-header" style="margin-top: 24px;">📝 ข้อความ (สูงสุด 3 ชั้น)</div>
+            <div id="textLayersContainer">
+                <!-- Text layers will be added here dynamically -->
+            </div>
+            <button class="add-layer-btn" id="addLayerBtn" onclick="addTextLayer()">➕ เพิ่มข้อความ</button>
+
+            <!-- User Settings -->
+            <div class="collapsible-header" onclick="toggleSection('userSection')" style="margin-top: 24px;">
+                <span>👤 ข้อมูลผู้ใช้</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content" id="userSection">
+                <div class="control-group">
+                    <label>👤 User ID (จาก URL หรือกรอกเอง)</label>
+                    <input type="text" id="userId" placeholder="user_id">
                 </div>
-            </div>
-
-            <!-- Background Color -->
-            <div class="control-group">
-                <label>🖌️ สีพื้นหลัง</label>
-                <div class="color-picker-container">
-                    <input type="color" id="bgColor" value="#000000">
-                    <input type="text" id="bgColorHex" class="color-input" value="#000000" placeholder="#000000 หรือ transparent">
+                <div class="control-group">
+                    <label>🔐 รหัสความปลอดภัย (ถ้ามี)</label>
+                    <input type="text" id="securityCode" placeholder="security_code">
                 </div>
-            </div>
-
-            <!-- Background Opacity -->
-            <div class="control-group">
-                <label>💧 ความโปร่งใสพื้นหลัง</label>
-                <div class="slider-container">
-                    <input type="range" id="bgOpacity" min="0" max="100" value="100">
-                    <span class="slider-value" id="bgOpacityValue">100%</span>
-                </div>
-            </div>
-
-            <!-- Position Presets -->
-            <div class="control-group">
-                <label>📍 ตำแหน่งสำเร็จรูป</label>
-                <div class="position-grid" id="positionGrid"></div>
-            </div>
-
-            <!-- Custom Position Display -->
-            <div class="control-group">
-                <label>🎯 ตำแหน่งที่เลือก</label>
-                <div style="display: flex; gap: 12px;">
-                    <input type="number" id="posX" min="0" max="100" value="50" placeholder="X">
-                    <input type="number" id="posY" min="0" max="100" value="50" placeholder="Y">
-                </div>
-            </div>
-
-            <!-- User ID -->
-            <div class="control-group">
-                <label>👤 User ID (จาก URL หรือกรอกเอง)</label>
-                <input type="text" id="userId" placeholder="user_id">
-            </div>
-
-            <!-- Security Code -->
-            <div class="control-group">
-                <label>🔐 รหัสความปลอดภัย (ถ้ามี)</label>
-                <input type="text" id="securityCode" placeholder="security_code">
             </div>
         </div>
     </div>
