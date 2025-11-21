@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เพิ่มข้อความลงวิดีโอ | Text Overlay Studio</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Chakra+Petch:wght@300;400;500;600;700&family=Bai+Jamjuree:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mitr', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Mitr', sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: #f8f9ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: #f0f2ff;
+            border-color: #667eea;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .preview-section.active {
+            display: block;
+        }
+
+        .preview-container {
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        #videoPreview {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .position-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            cursor: crosshair;
+        }
+
+        .position-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #FF6B6B;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        /* Video Controls */
+        .video-controls {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .video-timeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .play-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-slider {
+            flex: 1;
+        }
+
+        .time-display {
+            font-size: 14px;
+            color: #6C757D;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* Styling same as image-overlay.html */
+        .controls-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .controls-section.active {
+            display: block;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #2C3E50;
+            font-size: 14px;
+        }
+
+        .control-group input[type="text"],
+        .control-group textarea,
+        .control-group select,
+        .control-group input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-family: 'Mitr', sans-serif;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .control-group input:focus,
+        .control-group textarea:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .control-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Range Slider */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 44px;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            width: 100%;
+            height: 8px;
+            background: #e0e6ed;
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            margin-top: -8px;
+        }
+
+        input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: #e0e6ed;
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Color Picker */
+        .color-picker-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 44px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .color-input {
+            flex: 1;
+        }
+
+        /* Position Presets */
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .position-btn {
+            padding: 12px;
+            background: #f5f7fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Mitr', sans-serif;
+            font-size: 12px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .position-btn:hover,
+        .position-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Style Presets */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .preset-card {
+            padding: 16px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .preset-card:hover,
+        .preset-card.active {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .preset-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .preset-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 99;
+        }
+
+        .submit-btn {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            display: block;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Mitr', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e6ed;
+        }
+
+        /* Time Input Group */
+        .time-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .preset-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .position-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .position-btn {
+                padding: 8px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1>🎬 เพิ่มข้อความลงวิดีโอ</h1>
+            <a href="index.html" class="back-btn">← กลับ</a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">🎥</div>
+                <h3>อัปโหลดวิดีโอ</h3>
+                <p>คลิกหรือลากไฟล์มาวางที่นี่</p>
+                <p style="font-size: 12px; color: #6C757D; margin-top: 8px;">
+                    รองรับ: MP4, WEBM (สูงสุด 50MB)
+                </p>
+            </div>
+            <input type="file" id="fileInput" accept="video/mp4,video/webm">
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="section-header">🔍 ตัวอย่างวิดีโอ</div>
+            <div class="preview-container" id="previewContainer">
+                <video id="videoPreview" controls></video>
+                <div class="position-overlay" id="positionOverlay"></div>
+                <div class="position-marker" id="positionMarker" style="display: none;"></div>
+            </div>
+
+            <!-- Video Controls -->
+            <div class="video-controls">
+                <div class="video-timeline">
+                    <button class="play-btn" id="playBtn">▶️</button>
+                    <input type="range" id="videoTimeline" class="timeline-slider" min="0" max="100" value="0">
+                    <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 12px; font-size: 14px; color: #6C757D;">
+                👆 แตะเลือกตำแหน่งที่ต้องการวางข้อความ
+            </p>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls-section" id="controlsSection">
+            <!-- Text Input -->
+            <div class="control-group">
+                <label>📝 ข้อความ</label>
+                <textarea id="textInput" placeholder="พิมพ์ข้อความที่ต้องการ..."></textarea>
+            </div>
+
+            <!-- Video Timing -->
+            <div class="control-group">
+                <label>⏰ เวลาที่ข้อความปรากฏ (วินาที)</label>
+                <div class="time-input-group">
+                    <div>
+                        <label style="font-size: 12px; color: #6C757D;">เริ่มต้น (วินาที)</label>
+                        <input type="number" id="startTime" min="0" step="0.1" value="0" placeholder="0">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: #6C757D;">สิ้นสุด (วินาที, หรือเว้นว่างถ้าจนจบ)</label>
+                        <input type="number" id="endTime" min="0" step="0.1" placeholder="ทั้งหมด">
+                    </div>
+                </div>
+                <p style="font-size: 12px; color: #6C757D; margin-top: 8px;">
+                    💡 เว้นว่าง "สิ้นสุด" ถ้าต้องการให้แสดงจนจบวิดีโอ
+                </p>
+            </div>
+
+            <!-- Style Presets -->
+            <div class="control-group">
+                <label>🎨 สไตล์สำเร็จรูป</label>
+                <div class="preset-grid" id="presetGrid"></div>
+            </div>
+
+            <!-- Font Family -->
+            <div class="control-group">
+                <label>🔤 ฟอนต์</label>
+                <select id="fontSelect"></select>
+            </div>
+
+            <!-- Font Size -->
+            <div class="control-group">
+                <label>📏 ขนาดตัวอักษร</label>
+                <div class="slider-container">
+                    <input type="range" id="fontSize" min="12" max="120" value="24">
+                    <span class="slider-value" id="fontSizeValue">24px</span>
+                </div>
+            </div>
+
+            <!-- Text Color -->
+            <div class="control-group">
+                <label>🎨 สีตัวอักษร</label>
+                <div class="color-picker-container">
+                    <input type="color" id="textColor" value="#FFFFFF">
+                    <input type="text" id="textColorHex" class="color-input" value="#FFFFFF" placeholder="#FFFFFF">
+                </div>
+            </div>
+
+            <!-- Background Color -->
+            <div class="control-group">
+                <label>🖌️ สีพื้นหลัง</label>
+                <div class="color-picker-container">
+                    <input type="color" id="bgColor" value="#000000">
+                    <input type="text" id="bgColorHex" class="color-input" value="#000000" placeholder="#000000 หรือ transparent">
+                </div>
+            </div>
+
+            <!-- Background Opacity -->
+            <div class="control-group">
+                <label>💧 ความโปร่งใสพื้นหลัง</label>
+                <div class="slider-container">
+                    <input type="range" id="bgOpacity" min="0" max="100" value="100">
+                    <span class="slider-value" id="bgOpacityValue">100%</span>
+                </div>
+            </div>
+
+            <!-- Position Presets -->
+            <div class="control-group">
+                <label>📍 ตำแหน่งสำเร็จรูป</label>
+                <div class="position-grid" id="positionGrid"></div>
+            </div>
+
+            <!-- Custom Position Display -->
+            <div class="control-group">
+                <label>🎯 ตำแหน่งที่เลือก</label>
+                <div style="display: flex; gap: 12px;">
+                    <input type="number" id="posX" min="0" max="100" value="50" placeholder="X">
+                    <input type="number" id="posY" min="0" max="100" value="50" placeholder="Y">
+                </div>
+            </div>
+
+            <!-- User ID -->
+            <div class="control-group">
+                <label>👤 User ID (จาก URL หรือกรอกเอง)</label>
+                <input type="text" id="userId" placeholder="user_id">
+            </div>
+
+            <!-- Security Code -->
+            <div class="control-group">
+                <label>🔐 รหัสความปลอดภัย (ถ้ามี)</label>
+                <input type="text" id="securityCode" placeholder="security_code">
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section">
+        <button class="submit-btn" id="submitBtn" disabled>
+            🚀 สร้างวิดีโอ
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>กำลังสร้างวิดีโอ...</p>
+            <p style="font-size: 12px; color: #6C757D; margin-top: 8px;">
+                วิดีโออาจใช้เวลานานกว่ารูปภาพ
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="assets/js/cloudinary.js"></script>
+    <script src="assets/js/n8n.js"></script>
+    <script src="assets/js/video-app.js"></script>
+</body>
+</html>

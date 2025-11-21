@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="เพิ่มข้อความลงบนรูปภาพและวิดีโอ สำหรับ E-commerce">
+    <title>Text Overlay Studio | เพิ่มข้อความลงรูป-วิดีโอ</title>
+
+    <!-- Google Fonts - Thai -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/mobile.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mitr', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .option-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .option-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 16px;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #2C3E50;
+        }
+
+        .option-card:hover,
+        .option-card:active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .option-card.image {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .option-card.video {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .option-icon {
+            font-size: 48px;
+            margin-right: 16px;
+        }
+
+        .option-content h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .option-content p {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: white;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .option-card {
+                padding: 16px;
+            }
+
+            .option-icon {
+                font-size: 40px;
+            }
+
+            .option-content h2 {
+                font-size: 18px;
+            }
+        }
+
+        /* Touch feedback */
+        .option-card:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Text Overlay Studio</h1>
+            <p>เพิ่มข้อความลงบนรูปภาพและวิดีโอ</p>
+        </div>
+
+        <div class="card">
+            <div class="option-grid">
+                <!-- Image Option -->
+                <a href="image-overlay.html" class="option-card image">
+                    <div class="option-icon">🖼️</div>
+                    <div class="option-content">
+                        <h2>เพิ่มข้อความลงรูปภาพ</h2>
+                        <p>รองรับข้อความโค้ง และ Presets สำเร็จรูป</p>
+                    </div>
+                </a>
+
+                <!-- Video Option -->
+                <a href="video-overlay.html" class="option-card video">
+                    <div class="option-icon">🎬</div>
+                    <div class="option-content">
+                        <h2>เพิ่มข้อความลงวิดีโอ</h2>
+                        <p>กำหนดเวลาที่ข้อความปรากฏได้</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Version 1.0.0 | Made with ❤️ for E-commerce</p>
+        </div>
+    </div>
+
+    <!-- Config -->
+    <script src="config.js"></script>
+</body>
+</html>
