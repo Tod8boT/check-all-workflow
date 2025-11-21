@@ -176,10 +176,14 @@ class CloudinaryAPI {
     getLogoGravity(position) {
         const positions = {
             'top-left': 'g_north_west,x_15,y_15',
+            'top-center': 'g_north,y_15',
             'top-right': 'g_north_east,x_15,y_15',
-            'bottom-left': 'g_south_west,x_15,y_15',
-            'bottom-right': 'g_south_east,x_15,y_15',
+            'center-left': 'g_west,x_15',
             'center': 'g_center',
+            'center-right': 'g_east,x_15',
+            'bottom-left': 'g_south_west,x_15,y_15',
+            'bottom-center': 'g_south,y_15',
+            'bottom-right': 'g_south_east,x_15,y_15',
         };
         return positions[position] || positions['top-left'];
     }

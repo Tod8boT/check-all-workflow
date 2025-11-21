@@ -449,6 +449,141 @@
             border-bottom: 2px solid #e0e6ed;
         }
 
+        /* Collapsible Sections */
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .collapsible-header:hover {
+            background: #e8eaf0;
+        }
+
+        .collapsible-header.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .collapsible-icon {
+            transition: transform 0.3s;
+        }
+
+        .collapsible-header.active .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 12px 0;
+        }
+
+        .collapsible-content.active {
+            display: block;
+        }
+
+        /* Text Layers */
+        .text-layer {
+            background: #f8f9fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .text-layer.disabled {
+            opacity: 0.6;
+            background: #f0f0f0;
+        }
+
+        .layer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .layer-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2C3E50;
+        }
+
+        .layer-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .remove-layer-btn {
+            background: #FF6B6B;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Mitr', sans-serif;
+        }
+
+        .add-layer-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Mitr', sans-serif;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .add-layer-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Logo Section */
+        .logo-preview {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .logo-position-select {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .logo-pos-btn {
+            padding: 8px;
+            background: #f5f7fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Mitr', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .logo-pos-btn:hover,
+        .logo-pos-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
         /* Mobile Optimizations */
         @media (max-width: 768px) {
             .container {
@@ -511,198 +646,260 @@
 
         <!-- Controls Section -->
         <div class="controls-section" id="controlsSection">
-            <!-- Text Input -->
-            <div class="control-group">
-                <label>📝 ข้อความ</label>
-                <textarea id="textInput" placeholder="พิมพ์ข้อความที่ต้องการ..."></textarea>
+            <!-- Logo Upload Section -->
+            <div class="collapsible-header" onclick="toggleSection('logoSection')">
+                <span>🏷️ โลโก้/แบรนด์ (ถ้ามี)</span>
+                <span class="collapsible-icon">▼</span>
             </div>
-
-            <!-- Style Presets -->
-            <div class="control-group">
-                <label>🎨 สไตล์สำเร็จรูป</label>
-                <div class="preset-grid" id="presetGrid"></div>
-            </div>
-
-            <!-- Font Family -->
-            <div class="control-group">
-                <label>🔤 ฟอนต์</label>
-                <select id="fontSelect"></select>
-            </div>
-
-            <!-- Font Size -->
-            <div class="control-group">
-                <label>📏 ขนาดตัวอักษร</label>
-                <div class="slider-container">
-                    <input type="range" id="fontSize" min="12" max="120" value="24">
-                    <span class="slider-value" id="fontSizeValue">24px</span>
-                </div>
-            </div>
-
-            <!-- Text Color -->
-            <div class="control-group">
-                <label>🎨 สีตัวอักษร</label>
-                <div class="color-picker-container">
-                    <input type="color" id="textColor" value="#FFFFFF">
-                    <input type="text" id="textColorHex" class="color-input" value="#FFFFFF" placeholder="#FFFFFF">
-                </div>
-            </div>
-
-            <!-- Background Color -->
-            <div class="control-group">
-                <label>🖌️ สีพื้นหลัง</label>
-                <div class="color-picker-container">
-                    <input type="color" id="bgColor" value="#000000">
-                    <input type="text" id="bgColorHex" class="color-input" value="#000000" placeholder="#000000 หรือ transparent">
-                </div>
-            </div>
-
-            <!-- Background Opacity -->
-            <div class="control-group">
-                <label>💧 ความโปร่งใสพื้นหลัง</label>
-                <div class="slider-container">
-                    <input type="range" id="bgOpacity" min="0" max="100" value="100">
-                    <span class="slider-value" id="bgOpacityValue">100%</span>
-                </div>
-            </div>
-
-            <!-- Font Weight -->
-            <div class="control-group">
-                <label>💪 ความหนาตัวอักษร</label>
-                <select id="fontWeight">
-                    <option value="normal">Normal</option>
-                    <option value="bold">Bold</option>
-                </select>
-            </div>
-
-            <!-- Text Alignment -->
-            <div class="control-group">
-                <label>📐 การจัดข้อความ</label>
-                <select id="textAlign">
-                    <option value="center">Center (กลาง)</option>
-                    <option value="left">Left (ซ้าย)</option>
-                    <option value="right">Right (ขวา)</option>
-                </select>
-            </div>
-
-            <!-- Border/Stroke -->
-            <div class="control-group">
-                <label>🖍️ ขอบตัวอักษร (Stroke)</label>
-                <div class="slider-container">
-                    <input type="range" id="strokeWidth" min="0" max="10" value="0">
-                    <span class="slider-value" id="strokeWidthValue">0px</span>
-                </div>
-            </div>
-
-            <!-- Stroke Color -->
-            <div class="control-group" id="strokeColorGroup" style="display: none;">
-                <label>🎨 สีขอบตัวอักษร</label>
-                <div class="color-picker-container">
-                    <input type="color" id="strokeColor" value="#000000">
-                    <input type="text" id="strokeColorHex" class="color-input" value="#000000">
-                </div>
-            </div>
-
-            <!-- Shadow -->
-            <div class="control-group">
-                <div class="checkbox-container">
-                    <input type="checkbox" id="textShadow">
-                    <label for="textShadow" style="margin: 0;">💫 เงาตัวอักษร (Shadow)</label>
-                </div>
-            </div>
-
-            <!-- Shadow Settings -->
-            <div id="shadowSettings" style="display: none;">
+            <div class="collapsible-content" id="logoSection">
                 <div class="control-group">
-                    <label>📏 ขนาดเงา</label>
+                    <label>📤 อัปโหลดโลโก้</label>
+                    <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp" style="width: 100%; padding: 8px; border: 2px solid #e0e6ed; border-radius: 8px;">
+                    <img id="logoPreview" class="logo-preview" style="display: none;">
+                </div>
+
+                <div class="control-group" id="logoSizeGroup" style="display: none;">
+                    <label>📏 ขนาดโลโก้</label>
                     <div class="slider-container">
-                        <input type="range" id="shadowBlur" min="0" max="50" value="10">
-                        <span class="slider-value" id="shadowBlurValue">10px</span>
+                        <input type="range" id="logoSize" min="50" max="300" value="120">
+                        <span class="slider-value" id="logoSizeValue">120px</span>
                     </div>
                 </div>
 
+                <div class="control-group" id="logoPositionGroup" style="display: none;">
+                    <label>📍 ตำแหน่งโลโก้</label>
+                    <div class="logo-position-select">
+                        <button class="logo-pos-btn active" data-position="top-left">มุมบนซ้าย</button>
+                        <button class="logo-pos-btn" data-position="top-center">บนกลาง</button>
+                        <button class="logo-pos-btn" data-position="top-right">มุมบนขวา</button>
+                        <button class="logo-pos-btn" data-position="center-left">ซ้ายกลาง</button>
+                        <button class="logo-pos-btn" data-position="center">ตรงกลาง</button>
+                        <button class="logo-pos-btn" data-position="center-right">ขวากลาง</button>
+                        <button class="logo-pos-btn" data-position="bottom-left">มุมล่างซ้าย</button>
+                        <button class="logo-pos-btn" data-position="bottom-center">ล่างกลาง</button>
+                        <button class="logo-pos-btn" data-position="bottom-right">มุมล่างขวา</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Layers Section -->
+            <div class="section-header" style="margin-top: 24px;">📝 ข้อความ (สูงสุด 3 ชั้น)</div>
+            <div id="textLayersContainer">
+                <!-- Text layers will be added here dynamically -->
+            </div>
+            <button class="add-layer-btn" id="addLayerBtn" onclick="addTextLayer()">➕ เพิ่มข้อความ</button>
+
+            <!-- Shared Style Presets -->
+            <div class="collapsible-header active" onclick="toggleSection('presetSection')" style="margin-top: 24px;">
+                <span>🎨 สไตล์สำเร็จรูป</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content active" id="presetSection">
                 <div class="control-group">
-                    <label>🎨 สีเงา</label>
+                    <label>เลือกสไตล์</label>
+                    <select id="presetSelect" style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 8px; font-family: 'Mitr', sans-serif; font-size: 14px;">
+                        <option value="">-- เลือกสไตล์ (ไม่บังคับ) --</option>
+                    </select>
+                    <p style="font-size: 12px; color: #6C757D; margin-top: 8px;">
+                        💡 เลือกสไตล์เพื่อนำไปใช้กับข้อความชั้นที่เลือก
+                    </p>
+                </div>
+            </div>
+
+            <!-- Advanced Text Settings -->
+            <div class="collapsible-header" onclick="toggleSection('advancedSection')">
+                <span>⚙️ การตั้งค่าขั้นสูง (Advanced)</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content" id="advancedSection">
+                <!-- Font Family -->
+                <div class="control-group">
+                    <label>🔤 ฟอนต์</label>
+                    <select id="fontSelect"></select>
+                </div>
+
+                <!-- Font Size -->
+                <div class="control-group">
+                    <label>📏 ขนาดตัวอักษร</label>
+                    <div class="slider-container">
+                        <input type="range" id="fontSize" min="12" max="120" value="24">
+                        <span class="slider-value" id="fontSizeValue">24px</span>
+                    </div>
+                </div>
+
+                <!-- Font Weight -->
+                <div class="control-group">
+                    <label>💪 ความหนาตัวอักษร</label>
+                    <select id="fontWeight">
+                        <option value="normal">Normal</option>
+                        <option value="bold">Bold</option>
+                    </select>
+                </div>
+
+                <!-- Text Alignment -->
+                <div class="control-group">
+                    <label>📐 การจัดข้อความ</label>
+                    <select id="textAlign">
+                        <option value="center">Center (กลาง)</option>
+                        <option value="left">Left (ซ้าย)</option>
+                        <option value="right">Right (ขวา)</option>
+                    </select>
+                </div>
+
+                <!-- Text Color -->
+                <div class="control-group">
+                    <label>🎨 สีตัวอักษร</label>
                     <div class="color-picker-container">
-                        <input type="color" id="shadowColor" value="#000000">
-                        <input type="text" id="shadowColorHex" class="color-input" value="#000000">
+                        <input type="color" id="textColor" value="#FFFFFF">
+                        <input type="text" id="textColorHex" class="color-input" value="#FFFFFF" placeholder="#FFFFFF">
                     </div>
                 </div>
 
+                <!-- Background Color -->
                 <div class="control-group">
-                    <label>↔️ ตำแหน่งเงา</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div>
-                            <label style="font-size: 12px; color: #6C757D;">X (แนวนอน)</label>
-                            <input type="number" id="shadowX" min="-50" max="50" value="5">
+                    <label>🖌️ สีพื้นหลัง</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="bgColor" value="#000000">
+                        <input type="text" id="bgColorHex" class="color-input" value="#000000" placeholder="#000000 หรือ transparent">
+                    </div>
+                </div>
+
+                <!-- Background Opacity -->
+                <div class="control-group">
+                    <label>💧 ความโปร่งใสพื้นหลัง</label>
+                    <div class="slider-container">
+                        <input type="range" id="bgOpacity" min="0" max="100" value="100">
+                        <span class="slider-value" id="bgOpacityValue">100%</span>
+                    </div>
+                </div>
+
+                <!-- Border/Stroke -->
+                <div class="control-group">
+                    <label>🖍️ ขอบตัวอักษร (Stroke)</label>
+                    <div class="slider-container">
+                        <input type="range" id="strokeWidth" min="0" max="10" value="0">
+                        <span class="slider-value" id="strokeWidthValue">0px</span>
+                    </div>
+                </div>
+
+                <!-- Stroke Color -->
+                <div class="control-group" id="strokeColorGroup" style="display: none;">
+                    <label>🎨 สีขอบตัวอักษร</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="strokeColor" value="#000000">
+                        <input type="text" id="strokeColorHex" class="color-input" value="#000000">
+                    </div>
+                </div>
+
+                <!-- Shadow -->
+                <div class="control-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="textShadow">
+                        <label for="textShadow" style="margin: 0;">💫 เงาตัวอักษร (Shadow)</label>
+                    </div>
+                </div>
+
+                <!-- Shadow Settings -->
+                <div id="shadowSettings" style="display: none;">
+                    <div class="control-group">
+                        <label>📏 ขนาดเงา</label>
+                        <div class="slider-container">
+                            <input type="range" id="shadowBlur" min="0" max="50" value="10">
+                            <span class="slider-value" id="shadowBlurValue">10px</span>
                         </div>
-                        <div>
-                            <label style="font-size: 12px; color: #6C757D;">Y (แนวตั้ง)</label>
-                            <input type="number" id="shadowY" min="-50" max="50" value="5">
+                    </div>
+
+                    <div class="control-group">
+                        <label>🎨 สีเงา</label>
+                        <div class="color-picker-container">
+                            <input type="color" id="shadowColor" value="#000000">
+                            <input type="text" id="shadowColorHex" class="color-input" value="#000000">
                         </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>↔️ ตำแหน่งเงา</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div>
+                                <label style="font-size: 12px; color: #6C757D;">X (แนวนอน)</label>
+                                <input type="number" id="shadowX" min="-50" max="50" value="5">
+                            </div>
+                            <div>
+                                <label style="font-size: 12px; color: #6C757D;">Y (แนวตั้ง)</label>
+                                <input type="number" id="shadowY" min="-50" max="50" value="5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Letter Spacing -->
+                <div class="control-group">
+                    <label>📏 ระยะห่างตัวอักษร (Letter Spacing)</label>
+                    <div class="slider-container">
+                        <input type="range" id="letterSpacing" min="-5" max="20" value="0">
+                        <span class="slider-value" id="letterSpacingValue">0</span>
+                    </div>
+                </div>
+
+                <!-- Rotation -->
+                <div class="control-group">
+                    <label>🔄 หมุนข้อความ (Rotation)</label>
+                    <div class="slider-container">
+                        <input type="range" id="textRotation" min="-180" max="180" value="0">
+                        <span class="slider-value" id="textRotationValue">0°</span>
+                    </div>
+                </div>
+
+                <!-- Curved Text -->
+                <div class="control-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="curvedText">
+                        <label for="curvedText" style="margin: 0;">🌈 ข้อความโค้ง (Curved Text)</label>
+                    </div>
+                </div>
+
+                <!-- Curve Angle (shown when curved text is enabled) -->
+                <div class="control-group" id="curveAngleGroup" style="display: none;">
+                    <label>📐 มุมโค้ง</label>
+                    <div class="slider-container">
+                        <input type="range" id="curveAngle" min="-360" max="360" value="180">
+                        <span class="slider-value" id="curveAngleValue">180°</span>
+                    </div>
+                </div>
+
+                <!-- Position Presets -->
+                <div class="control-group">
+                    <label>📍 ตำแหน่งสำเร็จรูป</label>
+                    <div class="position-grid" id="positionGrid"></div>
+                </div>
+
+                <!-- Custom Position Display -->
+                <div class="control-group">
+                    <label>🎯 ตำแหน่งที่เลือก</label>
+                    <div style="display: flex; gap: 12px;">
+                        <input type="number" id="posX" min="0" max="100" value="50" placeholder="X">
+                        <input type="number" id="posY" min="0" max="100" value="50" placeholder="Y">
                     </div>
                 </div>
             </div>
 
-            <!-- Letter Spacing -->
-            <div class="control-group">
-                <label>📏 ระยะห่างตัวอักษร (Letter Spacing)</label>
-                <div class="slider-container">
-                    <input type="range" id="letterSpacing" min="-5" max="20" value="0">
-                    <span class="slider-value" id="letterSpacingValue">0</span>
+            <!-- User Settings -->
+            <div class="collapsible-header" onclick="toggleSection('userSection')">
+                <span>👤 ข้อมูลผู้ใช้</span>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content" id="userSection">
+                <!-- User ID -->
+                <div class="control-group">
+                    <label>👤 User ID (จาก URL หรือกรอกเอง)</label>
+                    <input type="text" id="userId" placeholder="user_id">
                 </div>
-            </div>
 
-            <!-- Rotation -->
-            <div class="control-group">
-                <label>🔄 หมุนข้อความ (Rotation)</label>
-                <div class="slider-container">
-                    <input type="range" id="textRotation" min="-180" max="180" value="0">
-                    <span class="slider-value" id="textRotationValue">0°</span>
+                <!-- Security Code -->
+                <div class="control-group">
+                    <label>🔐 รหัสความปลอดภัย (ถ้ามี)</label>
+                    <input type="text" id="securityCode" placeholder="security_code">
                 </div>
-            </div>
-
-            <!-- Curved Text -->
-            <div class="control-group">
-                <div class="checkbox-container">
-                    <input type="checkbox" id="curvedText">
-                    <label for="curvedText" style="margin: 0;">🌈 ข้อความโค้ง (Curved Text)</label>
-                </div>
-            </div>
-
-            <!-- Curve Angle (shown when curved text is enabled) -->
-            <div class="control-group" id="curveAngleGroup" style="display: none;">
-                <label>📐 มุมโค้ง</label>
-                <div class="slider-container">
-                    <input type="range" id="curveAngle" min="-360" max="360" value="180">
-                    <span class="slider-value" id="curveAngleValue">180°</span>
-                </div>
-            </div>
-
-            <!-- Position Presets -->
-            <div class="control-group">
-                <label>📍 ตำแหน่งสำเร็จรูป</label>
-                <div class="position-grid" id="positionGrid"></div>
-            </div>
-
-            <!-- Custom Position Display -->
-            <div class="control-group">
-                <label>🎯 ตำแหน่งที่เลือก</label>
-                <div style="display: flex; gap: 12px;">
-                    <input type="number" id="posX" min="0" max="100" value="50" placeholder="X">
-                    <input type="number" id="posY" min="0" max="100" value="50" placeholder="Y">
-                </div>
-            </div>
-
-            <!-- User ID -->
-            <div class="control-group">
-                <label>👤 User ID (จาก URL หรือกรอกเอง)</label>
-                <input type="text" id="userId" placeholder="user_id">
-            </div>
-
-            <!-- Security Code -->
-            <div class="control-group">
-                <label>🔐 รหัสความปลอดภัย (ถ้ามี)</label>
-                <input type="text" id="securityCode" placeholder="security_code">
             </div>
         </div>
     </div>
@@ -726,6 +923,6 @@
     <script src="config.js"></script>
     <script src="assets/js/cloudinary.js"></script>
     <script src="assets/js/n8n.js"></script>
-    <script src="assets/js/image-app.js"></script>
+    <script src="assets/js/image-app-new.js"></script>
 </body>
 </html>
