@@ -487,8 +487,43 @@ function updatePreview() {
     appState.currentSettings.text = textInput.value;
     appState.currentSettings.fontFamily = fontSelect.value;
 
-    // Log for debugging
-    console.log('Preview updated:', appState.currentSettings);
+    // Update text preview overlay
+    const textOverlay = document.getElementById('textPreviewOverlay');
+    if (!textOverlay) return;
+
+    const text = appState.currentSettings.text;
+    if (!text.trim()) {
+        textOverlay.style.display = 'none';
+        return;
+    }
+
+    // Position
+    textOverlay.style.left = appState.currentSettings.position.x + '%';
+    textOverlay.style.top = appState.currentSettings.position.y + '%';
+
+    // Font
+    textOverlay.style.fontFamily = appState.currentSettings.fontFamily + ', sans-serif';
+    textOverlay.style.fontSize = appState.currentSettings.fontSize + 'px';
+    textOverlay.style.color = appState.currentSettings.color;
+
+    // Background
+    if (appState.currentSettings.backgroundColor !== 'transparent') {
+        const opacity = appState.currentSettings.bgOpacity / 100;
+        const bgColor = appState.currentSettings.backgroundColor;
+        // Convert hex to rgba
+        const r = parseInt(bgColor.slice(1, 3), 16);
+        const g = parseInt(bgColor.slice(3, 5), 16);
+        const b = parseInt(bgColor.slice(5, 7), 16);
+        textOverlay.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        textOverlay.style.padding = '8px 16px';
+        textOverlay.style.borderRadius = '4px';
+    } else {
+        textOverlay.style.backgroundColor = 'transparent';
+        textOverlay.style.padding = '0';
+    }
+
+    textOverlay.textContent = text;
+    textOverlay.style.display = 'block';
 }
 
 /**

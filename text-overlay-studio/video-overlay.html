@@ -154,6 +154,15 @@
             pointer-events: none;
         }
 
+        .text-preview-overlay {
+            position: absolute;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
         /* Video Controls */
         .video-controls {
             margin-top: 16px;
@@ -539,6 +548,7 @@
                 <video id="videoPreview" controls></video>
                 <div class="position-overlay" id="positionOverlay"></div>
                 <div class="position-marker" id="positionMarker" style="display: none;"></div>
+                <div class="text-preview-overlay" id="textPreviewOverlay" style="display: none;"></div>
             </div>
 
             <!-- Video Controls -->
