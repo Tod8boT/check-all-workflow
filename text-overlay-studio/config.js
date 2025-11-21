@@ -3,7 +3,7 @@ const CONFIG = {
     // Cloudinary Settings
     cloudinary: {
         cloudName: 'dz3cmaxnc',
-        uploadPreset: 'template',
+        uploadPreset: 'n8n-fb',
     },
 
     // n8n Webhook URL
