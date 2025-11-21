@@ -99,20 +99,20 @@ class CloudinaryAPI {
             letterSpacing = 0,
         } = options;
 
-        // Build transformation parts
-        const parts = [];
+        // Build transformation parts - Cloudinary requires specific order
+        const transformations = [];
 
         // Gravity and position
         let gravityStr = this.calculateGravity(position);
-        parts.push(`g_${gravityStr}`);
+        transformations.push(`g_${gravityStr}`);
 
-        // X, Y offsets (as percentages)
+        // X, Y offsets
         const xOffset = this.calculateOffset(position.x);
         const yOffset = this.calculateOffset(position.y);
-        if (xOffset !== 0) parts.push(`x_${xOffset}`);
-        if (yOffset !== 0) parts.push(`y_${yOffset}`);
+        if (xOffset !== 0) transformations.push(`x_${xOffset}`);
+        if (yOffset !== 0) transformations.push(`y_${yOffset}`);
 
-        // Build text style string with new options
+        // Build text style string
         let textStyleStr = fontFamily.replace(/ /g, '_');
 
         // Font weight
@@ -140,43 +140,43 @@ class CloudinaryAPI {
 
         // Text layer
         const encodedText = this.encodeText(text);
-        parts.push(`l_text:${textStyleStr}:${encodedText}`);
+        transformations.push(`l_text:${textStyleStr}:${encodedText}`);
 
         // Text color
-        parts.push(`co_rgb:${color.replace('#', '')}`);
+        transformations.push(`co_rgb:${color.replace('#', '')}`);
 
         // Stroke color (if stroke enabled)
         if (strokeWidth > 0) {
-            parts.push(`bo_${strokeWidth}px_solid_rgb:${strokeColor.replace('#', '')}`);
+            transformations.push(`bo_${strokeWidth}px_solid_rgb:${strokeColor.replace('#', '')}`);
         }
 
         // Background (if not transparent)
         if (backgroundColor && backgroundColor !== 'transparent') {
             const bgColor = backgroundColor.replace('#', '');
-            parts.push(`b_rgb:${bgColor}`);
+            transformations.push(`b_rgb:${bgColor}`);
             if (bgOpacity < 100) {
-                parts.push(`o_${bgOpacity}`);
+                transformations.push(`o_${bgOpacity}`);
             }
         }
 
-        // Shadow effect
-        if (shadow) {
-            // Cloudinary uses e_shadow for drop shadow
-            parts.push(`e_shadow:${shadowBlur},x_${shadowX},y_${shadowY},co_rgb:${shadowColor.replace('#', '')}`);
-        }
-
-        // Curved text (arc distortion)
+        // IMPORTANT: Curved text MUST come AFTER text layer + color
+        // Cloudinary syntax: l_text:Font:Text,co_color,e_distort:arc:degrees
         if (curved) {
-            parts.push(`e_distort:arc:${curveAngle}`);
+            transformations.push(`e_distort:arc:${curveAngle}`);
         }
 
-        // Rotation
+        // Rotation - applied after all other text effects
         if (rotation !== 0) {
-            parts.push(`a_${rotation}`);
+            transformations.push(`a_${rotation}`);
         }
 
-        // Build final URL
-        const transformation = parts.join(',');
+        // Shadow effect - applied last
+        if (shadow) {
+            transformations.push(`e_shadow:${shadowBlur},x_${shadowX},y_${shadowY},co_rgb:${shadowColor.replace('#', '')}`);
+        }
+
+        // Build final URL with comma-separated transformations
+        const transformation = transformations.join(',');
         const resourceType = publicId.includes('video') ? 'video' : 'image';
 
         return `${this.deliveryURL}/${resourceType}/upload/${transformation}/${publicId}`;
