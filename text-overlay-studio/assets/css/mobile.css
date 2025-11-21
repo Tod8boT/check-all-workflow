@@ -1,0 +1,186 @@
+/**
+ * 📱 Mobile Optimizations
+ * Responsive styles for mobile devices
+ */
+
+/* Mobile First - Base styles are already mobile-friendly */
+
+/* Small devices (phones, less than 576px) */
+@media (max-width: 575px) {
+    body {
+        font-size: 14px;
+    }
+
+    .header h1 {
+        font-size: 18px !important;
+    }
+
+    .container {
+        padding: 8px !important;
+    }
+
+    .upload-section,
+    .preview-section,
+    .controls-section {
+        padding: 16px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .control-group {
+        margin-bottom: 16px !important;
+    }
+
+    .preset-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+
+    .position-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 4px !important;
+    }
+
+    .position-btn {
+        padding: 6px !important;
+        font-size: 10px !important;
+    }
+
+    .submit-btn {
+        font-size: 16px !important;
+        padding: 14px !important;
+    }
+}
+
+/* Medium devices (tablets, 576px to 768px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    .container {
+        max-width: 540px;
+        margin: 0 auto;
+    }
+
+    .preset-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Large devices (desktops, 768px and up) */
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .upload-area {
+        padding: 48px !important;
+    }
+
+    .preset-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .position-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+
+    .preset-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Touch-specific optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase touch targets */
+    button,
+    input[type="range"],
+    select {
+        min-height: 44px;
+    }
+
+    /* Disable hover effects on touch devices */
+    .option-card:hover,
+    .preset-card:hover,
+    .position-btn:hover {
+        transform: none;
+    }
+
+    /* Use active states instead */
+    .option-card:active {
+        transform: scale(0.98);
+    }
+
+    .preset-card:active {
+        transform: translateY(0);
+    }
+
+    .position-btn:active {
+        transform: scale(0.95);
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .preview-container {
+        max-height: 50vh;
+    }
+
+    .controls-section {
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+    /* Fix for iOS input zoom */
+    input[type="text"],
+    input[type="number"],
+    input[type="color"],
+    textarea,
+    select {
+        font-size: 16px !important;
+    }
+
+    /* Fix for iOS safe area */
+    body {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .submit-section {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    /* Optional: Add dark mode styles if needed */
+    /* body {
+        background: #1a1a1a;
+        color: #ffffff;
+    } */
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    button,
+    input,
+    select,
+    textarea {
+        border-width: 3px !important;
+    }
+}
