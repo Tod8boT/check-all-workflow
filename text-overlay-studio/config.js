@@ -2,8 +2,8 @@
 const CONFIG = {
     // Cloudinary Settings
     cloudinary: {
-        cloudName: 'YOUR_CLOUD_NAME', // เปลี่ยนเป็น cloud name ของคุณ
-        uploadPreset: 'upload-image', // สร้าง upload preset ใน Cloudinary
+        cloudName: 'demo', // ⚠️ DEMO ACCOUNT - เปลี่ยนเป็น cloud name ของคุณ
+        uploadPreset: 'docs_upload_example_us_preset', // ⚠️ DEMO - สร้าง upload preset ใน Cloudinary
     },
 
     // n8n Webhook URL
